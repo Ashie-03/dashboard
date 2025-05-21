@@ -3,12 +3,12 @@ import { Users, Calendar, ClipboardCheck, Clock, FileText, Activity, ChevronRigh
 import StatsCard from '../components/dashboard/StatsCard';
 import { Card, CardHeader, CardContent } from '../components/ui/Card';
 import MiniCalendar from '../components/dashboard/MiniCalendar';
-import ActivityItem, { Activity } from '../components/dashboard/ActivityItem';
+import ActivityItem, { Activity as ActivityType } from '../components/dashboard/ActivityItem';
 import Badge from '../components/ui/Badge';
 import { cn } from '../utils/cn';
 
 // Mock activity data for the activity feed
-const mockActivities: Activity[] = [
+const mockActivities: ActivityType[] = [
   {
     id: '1',
     user: { name: 'Dr. Roberts', initials: 'DR' },
