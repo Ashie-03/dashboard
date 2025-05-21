@@ -1,137 +1,220 @@
 import React, { useState } from 'react';
-import { FolderKanban, Clock, CheckSquare, Users } from 'lucide-react';
+import { Users, Calendar, ClipboardCheck, Clock, FileText, Activity, ChevronRight } from 'lucide-react';
 import StatsCard from '../components/dashboard/StatsCard';
 import { Card, CardHeader, CardContent } from '../components/ui/Card';
 import MiniCalendar from '../components/dashboard/MiniCalendar';
 import ActivityItem, { Activity } from '../components/dashboard/ActivityItem';
-import ProjectCard, { Project } from '../components/projects/ProjectCard';
+import Badge from '../components/ui/Badge';
+import { cn } from '../utils/cn';
 
-const mockProjects: Project[] = [
-  {
-    id: '1',
-    name: 'Website Redesign',
-    description: 'Completely revamp the company website with a modern, user-friendly design.',
-    progress: 68,
-    status: 'active',
-    dueDate: 'May 25',
-    tasks: { total: 12, completed: 8 },
-    members: [
-      { id: '1', name: 'Jane Smith', initials: 'JS' },
-      { id: '2', name: 'Alex King', initials: 'AK' },
-      { id: '3', name: 'Taylor Wilson', initials: 'TW' },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Mobile App Development',
-    description: 'Build a native mobile app for both iOS and Android platforms.',
-    progress: 35,
-    status: 'active',
-    dueDate: 'Jun 15',
-    tasks: { total: 18, completed: 6 },
-    members: [
-      { id: '2', name: 'Alex King', initials: 'AK' },
-      { id: '4', name: 'Morgan Chen', initials: 'MC' },
-    ],
-  },
-];
-
+// Mock activity data for the activity feed
 const mockActivities: Activity[] = [
   {
     id: '1',
-    user: { name: 'Alex King', initials: 'AK' },
-    action: 'commented on',
-    target: 'Design Homepage',
+    user: { name: 'Dr. Roberts', initials: 'DR' },
+    action: 'completed session with',
+    target: 'Sarah Johnson',
     time: '10 minutes ago',
-    type: 'comment',
-  },
-  {
-    id: '2',
-    user: { name: 'Taylor Wilson', initials: 'TW' },
-    action: 'completed',
-    target: 'Setup Analytics',
-    time: '1 hour ago',
     type: 'task',
   },
   {
+    id: '2',
+    user: { name: 'Dr. Roberts', initials: 'DR' },
+    action: 'added notes for',
+    target: 'Michael Chen',
+    time: '1 hour ago',
+    type: 'comment',
+  },
+  {
     id: '3',
-    user: { name: 'Jane Smith', initials: 'JS' },
-    action: 'created',
-    target: 'Mobile App Development',
+    user: { name: 'Dr. Roberts', initials: 'DR' },
+    action: 'scheduled appointment with',
+    target: 'Emily Wilson',
     time: '2 hours ago',
     type: 'project',
   },
   {
     id: '4',
-    user: { name: 'Morgan Chen', initials: 'MC' },
-    action: 'added',
-    target: 'Acme Inc.',
+    user: { name: 'System', initials: 'S' },
+    action: 'sent reminder to',
+    target: 'James Brown',
     time: 'Yesterday',
     type: 'client',
   },
 ];
 
+// Mock upcoming appointments
+const upcomingAppointments = [
+  {
+    id: '1',
+    patientName: 'Sarah Johnson',
+    type: 'Follow-up',
+    time: '2:00 PM',
+    status: 'confirmed',
+  },
+  {
+    id: '2',
+    patientName: 'Michael Chen',
+    type: 'Initial Consultation',
+    time: '3:30 PM',
+    status: 'pending',
+  },
+  {
+    id: '3',
+    patientName: 'Emily Wilson',
+    type: 'Treatment',
+    time: '4:45 PM',
+    status: 'confirmed',
+  },
+];
+
+// Mock recent patients
+const recentPatients = [
+  {
+    id: '1',
+    name: 'Sarah Johnson',
+    lastVisit: '2 days ago',
+    nextAppointment: 'Today, 2:00 PM',
+    status: 'Active',
+    initials: 'SJ',
+  },
+  {
+    id: '2',
+    name: 'Michael Chen',
+    lastVisit: '1 week ago',
+    nextAppointment: 'Today, 3:30 PM',
+    status: 'Active',
+    initials: 'MC',
+  },
+  {
+    id: '3',
+    name: 'Emily Wilson',
+    lastVisit: '2 weeks ago',
+    nextAppointment: 'Tomorrow',
+    status: 'Active',
+    initials: 'EW',
+  },
+];
+
+// Dashboard component
 const Dashboard: React.FC = () => {
-  const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
-
-  const handleProjectToggle = (projectId: string) => {
-    setExpandedProjectId(expandedProjectId === projectId ? null : projectId);
-  };
-
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
-          title="Total Projects"
-          value="12"
-          icon={<FolderKanban size={20} />}
+          title="Total Patients"
+          value="124"
+          icon={<Users size={20} />}
           change={{ value: 8, trend: 'up' }}
         />
         <StatsCard
-          title="Tasks Due Soon"
+          title="Today's Appointments"
           value="5"
-          icon={<Clock size={20} />}
-          change={{ value: 2, trend: 'down' }}
+          icon={<Calendar size={20} />}
+          change={{ value: 2, trend: 'up' }}
         />
         <StatsCard
-          title="Completed Tasks"
+          title="Completed Sessions"
           value="23"
-          icon={<CheckSquare size={20} />}
+          icon={<ClipboardCheck size={20} />}
           change={{ value: 15, trend: 'up' }}
         />
         <StatsCard
-          title="Team Members"
-          value="8"
-          icon={<Users size={20} />}
-          change={{ value: 0, trend: 'neutral' }}
+          title="Pending Reports"
+          value="3"
+          icon={<FileText size={20} />}
+          change={{ value: 1, trend: 'down' }}
         />
       </div>
       
       {/* Middle Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Projects Column */}
+        {/* Main Column */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Today's Schedule */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading font-semibold">Active Projects</h2>
-              <a href="/projects" className="text-sm text-primary font-medium">
+              <h2 className="font-heading font-semibold">Today's Schedule</h2>
+              <a href="/appointments" className="text-sm text-primary font-medium">
                 View all
               </a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {mockProjects.map((project) => (
-                <ProjectCard 
-                  key={project.id} 
-                  project={project}
-                  isExpanded={expandedProjectId === project.id}
-                  onToggle={handleProjectToggle}
-                />
-              ))}
-            </div>
+            <Card>
+              <CardContent className="divide-y divide-border">
+                {upcomingAppointments.map((appointment) => (
+                  <div 
+                    key={appointment.id}
+                    className="flex items-center justify-between py-3 first:pt-2 last:pb-2"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                        <Clock size={20} className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{appointment.patientName}</h3>
+                        <p className="text-sm text-text/60">{appointment.type}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge
+                        variant={appointment.status === 'confirmed' ? 'success' : 'warning'}
+                        size="sm"
+                      >
+                        {appointment.status}
+                      </Badge>
+                      <span className="text-sm font-medium">{appointment.time}</span>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Calendar Preview */}
+          {/* Recent Patients */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-heading font-semibold">Recent Patients</h2>
+              <a href="/clients" className="text-sm text-primary font-medium">
+                View all
+              </a>
+            </div>
+            <Card>
+              <CardContent className="divide-y divide-border">
+                {recentPatients.map((patient) => (
+                  <div 
+                    key={patient.id}
+                    className="flex items-center justify-between py-3 first:pt-2 last:pb-2"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                        <span className="text-sm font-medium">{patient.initials}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{patient.name}</h3>
+                        <p className="text-sm text-text/60">Last visit: {patient.lastVisit}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <Badge variant="outline" size="sm">
+                          {patient.status}
+                        </Badge>
+                        <p className="text-sm text-text/60 mt-1">
+                          Next: {patient.nextAppointment}
+                        </p>
+                      </div>
+                      <button className="p-2 hover:bg-hover rounded-md">
+                        <ChevronRight size={16} className="text-text/40" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Calendar Preview (Mobile/Tablet) */}
           <div className="lg:hidden">
             <h2 className="font-heading font-semibold mb-4">Calendar</h2>
             <MiniCalendar />
