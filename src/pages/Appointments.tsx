@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Filter, Plus, LayoutList, LayoutKanban } from 'lucide-react';
+import { Calendar, Filter, Plus, LayoutList, Kanban as LayoutKanban } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
