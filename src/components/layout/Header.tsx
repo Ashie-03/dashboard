@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { BellIcon, SearchIcon } from 'lucide-react';
+import { SearchIcon, LogOut } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import Button from '../ui/Button';
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -9,21 +10,17 @@ interface HeaderProps {
   toggleTheme: () => void;
 }
 
+// Header component that displays page title and search functionality
 const Header: React.FC<HeaderProps> = ({ isDark, toggleTheme }) => {
   const location = useLocation();
   
+  // Get the current page title based on the route
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/':
         return 'Dashboard';
-      case '/projects':
-        return 'Projects';
-      case '/tasks':
-        return 'My Tasks';
-      case '/calendar':
-        return 'Calendar';
-      case '/team':
-        return 'Team';
+      case '/appointments':
+        return 'Appointments';
       case '/clients':
         return 'Clients';
       case '/settings':
@@ -31,6 +28,12 @@ const Header: React.FC<HeaderProps> = ({ isDark, toggleTheme }) => {
       default:
         return 'Dashboard';
     }
+  };
+
+  // Handle logout functionality
+  const handleLogout = () => {
+    // TODO: Implement logout logic
+    console.log('Logging out...');
   };
 
   return (
@@ -52,10 +55,15 @@ const Header: React.FC<HeaderProps> = ({ isDark, toggleTheme }) => {
             />
           </div>
           
-          <button className="p-2 rounded-md hover:bg-hover dark:hover:bg-hover-dark relative">
-            <BellIcon size={20} />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary dark:bg-primary-dark rounded-full"></span>
-          </button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleLogout}
+            className="text-error hover:text-error/80"
+          >
+            <LogOut size={18} />
+            <span className="ml-2">Logout</span>
+          </Button>
         </div>
       </div>
     </header>
