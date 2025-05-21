@@ -3,6 +3,7 @@ import { Calendar, Filter, Plus, LayoutList, Kanban as LayoutKanban } from 'luci
 import { Card, CardHeader, CardContent } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
+import AppointmentDrawer from '../components/appointments/AppointmentDrawer';
 import { cn } from '../utils/cn';
 
 // Interface for appointment data
@@ -69,24 +70,27 @@ const mockAppointments: Appointment[] = [
 const Appointments: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
 
   // Get appointments for different time periods
   const getTodayAppointments = () => 
-    mockAppointments.filter(apt => apt.dateTime.includes('Today'));
+    appointments.filter(apt => apt.dateTime.includes('Today'));
   
   const getUpcomingAppointments = () => 
-    mockAppointments.filter(apt => !apt.dateTime.includes('Today'));
+    appointments.filter(apt => !apt.dateTime.includes('Today'));
 
   // Handle appointment status change
   const handleStatusChange = (appointmentId: string, newStatus: Appointment['status']) => {
-    // TODO: Implement status change logic
-    console.log('Changing status:', appointmentId, newStatus);
+    setAppointments(appointments.map(apt => 
+      apt.id === appointmentId ? { ...apt, status: newStatus } : apt
+    ));
   };
 
   // Handle appointment selection
   const handleAppointmentClick = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
-    // TODO: Implement appointment details view
+    setDrawerOpen(true);
   };
 
   // Render appointment card
@@ -216,6 +220,14 @@ const Appointments: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Appointment Details Drawer */}
+      <AppointmentDrawer
+        appointment={selectedAppointment || undefined}
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onStatusChange={handleStatusChange}
+      />
     </div>
   );
 };
